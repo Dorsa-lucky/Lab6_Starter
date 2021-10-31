@@ -5,7 +5,10 @@
 const recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
+  'assets/recipes/recipe-1.json',
+  'assets/recipes/recipe-2.json',
+  'assets/recipes/recipe-3.json'
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -24,6 +27,8 @@ async function init() {
     console.log('Recipe fetch unsuccessful');
     return;
   };
+
+  console.log(recipeData);
   // Add the first three recipe cards to the page
   createRecipeCards();
   // Make the "Show more" button functional
@@ -43,6 +48,23 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+   
+    for( let i = 0; i < recipes.length; i++){
+     
+      fetch(recipes[i])
+      .then((response) => response.json())
+      .then((data) => {
+        recipeData[recipes[i]] = data;
+       // console.log(recipeData[recipes[i]]);
+
+        if(recipes.length == Object.keys(recipeData).length)
+        resolve(true);
+      }) 
+      .catch((error) => { reject(false); });
+     
+    }
+    
+    
   });
 }
 
@@ -54,6 +76,22 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+  
+    // for (let key in recipeData){
+    //   var element = document.createElement("recipe-card");
+    //   element.data = recipeData[key];
+    //   document.querySelector("main").appendChild(element);
+    // }
+
+    for(let i = 0 ; i < 3 ; i++){
+      var element = document.createElement("recipe-card");
+      element.data = recipeData[recipes[i]];
+      document.querySelector("main").appendChild(element);
+    }
+  
+  
+
+  
 }
 
 function bindShowMore() {
@@ -65,4 +103,41 @@ function bindShowMore() {
   // in the recipeData object where you stored them/
 
   // Part 2 Explore - TODO
+  const buttonElement = document.querySelector("button");
+  // const buttonWrapper = document.getElementById("button-wrapper");
+  // const buttonWrapper_child = document.createElement("img");
+
+  // buttonWrapper_child.setAttribute("src","assets/images/icons/arrow-down.png");
+
+  // buttonWrapper.appendChild(buttonWrapper_child);
+  // buttonWrapper.appendChild(buttonElement);
+  
+
+  buttonElement.addEventListener('click',change);
+
+
+  function change(){
+    if(buttonElement.textContent == "Show more"){
+      for(let i = 3 ; i < recipes.length ; i++){
+        var element = document.createElement("recipe-card");
+        element.data = recipeData[recipes[i]];
+        document.querySelector("main").appendChild(element);
+        element.setAttribute("class","more");
+      }
+      buttonElement.textContent = "Show less";
+    } 
+    // else {
+    //   buttonElement.textContent= "Show more";
+    // }
+    else{
+      buttonElement.textContent= "Show more";
+      for(let i = recipes.length; i > 3; i--){
+        const less = document.querySelector(".more");
+        less.parentNode.removeChild(less);
+      }
+      
+    }
+      
+    }
+  
 }

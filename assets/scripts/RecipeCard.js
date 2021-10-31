@@ -3,6 +3,8 @@ class RecipeCard extends HTMLElement {
     // Part 1 Expose - TODO
 
     // You'll want to attach the shadow DOM here
+    super();
+    const shadowRoot = this.attachShadow({mode: 'open'});
   }
 
   set data(data) {
@@ -88,6 +90,100 @@ class RecipeCard extends HTMLElement {
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
 
+    const image = document.createElement('img');
+    let imgSrc = getImgUrl(data);
+    image.setAttribute("src",imgSrc);
+    card.appendChild(image);
+
+
+    const title = document.createElement('p');
+    const title_child = document.createElement('a');
+    let titleSrc = getHeader(data);
+    //console.log(titleSrc);
+    title.setAttribute("class", "title");
+    title_child.setAttribute("href", titleSrc);
+    title_child.textContent = getHeader(data);
+    title.appendChild(title_child);
+    card.appendChild(title);
+
+    const organization = document.createElement("p");
+    let organizationSrc = getOrganization(data);
+    //console.log(organizationSrc);
+    organization.setAttribute("class","organization");
+    organization.textContent = getOrganization(data);
+    card.appendChild(organization);
+
+
+    const rating = document.createElement("div");
+    const rating_child = document.createElement("span");
+    let ratingSrc = searchForKey(data,"ratingValue");
+    //console.log(ratingSrc);
+    const image_rating_child = document.createElement('img');
+    let image_rating_src = "assets/images/icons/"+ Math.round(ratingSrc) + "-star.svg";
+
+    if(ratingSrc === null || ratingSrc === undefined){
+      rating.setAttribute("class","rating");
+      rating_child.setAttribute("span"," No Reviews");
+      rating.textContent = "No Reviews";
+      rating.appendChild(rating_child)
+      card.appendChild(rating);
+      let image_rating_src = "assets/images/icons/0-star.svg";
+      console.log("dorsa");
+      image_rating_child.setAttribute("src", image_rating_src);
+    }else{
+      rating.setAttribute("class","rating");
+      rating_child.setAttribute("span",ratingSrc);
+      rating.textContent = ratingSrc;
+      rating.appendChild(rating_child)
+      card.appendChild(rating);
+      image_rating_child.alt = ratingSrc + " stars";
+    //console.log(image_rating_src);
+      image_rating_child.setAttribute("src", image_rating_src);
+      rating.appendChild(image_rating_child);
+      const count_child = document.createElement("span");
+      let countSrc = "(" + searchForKey(data,"ratingCount") +")";
+      count_child.setAttribute("span", countSrc);
+      count_child.textContent = countSrc;
+      rating.appendChild(count_child);
+    }
+    
+
+    
+
+    // if(image_rating_src === null || image_rating_src === undefined){
+    //   let image_rating_src = "assets/images/icons/0-star.svg";
+    //   console.log("dorsa");
+    //   image_rating_child.setAttribute("src", image_rating_src);
+    // }else{
+    // image_rating_child.alt = ratingSrc + " stars";
+    // //console.log(image_rating_src);
+    // image_rating_child.setAttribute("src", image_rating_src);
+    // }
+    
+    
+
+    const time = document.createElement("time");
+    let timeSrc = searchForKey(data,"totalTime");
+    let modified_timeSrc = convertTime(timeSrc);
+    time.setAttribute("time", modified_timeSrc);
+    time.textContent = modified_timeSrc;
+    card.appendChild(time);
+
+
+    const ingredient = document.createElement("p");
+    let ingredientSrc = searchForKey(data,"recipeIngredient");
+    let ingredientSrc_list = createIngredientList(ingredientSrc);
+    //console.log(ingredientSrc_list);
+    ingredient.setAttribute("class", "ingredients");
+    ingredient.textContent = ingredientSrc_list;
+    card.appendChild(ingredient);
+
+
+
+
+    this.shadowRoot.appendChild(styleElem);
+    this.shadowRoot.appendChild(card);
+
     // Some functions that will be helpful here:
     //    document.createElement()
     //    document.querySelector()
@@ -100,6 +196,26 @@ class RecipeCard extends HTMLElement {
     // created in the constructor()
 
     // Part 1 Expose - TODO
+
+    function getImgUrl(data) {
+      if (data.image) return data.image.url;
+      if (data['@graph']) {
+        for (let i = 0; i < data['@graph'].length; i++) {
+          if (data['@graph'][i]['@type'] == 'ImageObject') return data['@graph'][i].url;
+        }
+      };
+      return null;
+    }
+
+    function getHeader(data) {
+      if (data.name) return data.name;
+      if (data['@graph']) {
+        for (let i = 0; i < data['@graph'].length; i++) {
+          if (data['@graph'][i]['@type'] == 'Article') return data['@graph'][i].headline;
+        }
+      };
+      return null;
+    }
   }
 }
 
