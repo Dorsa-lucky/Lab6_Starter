@@ -104,13 +104,13 @@ function bindShowMore() {
 
   // Part 2 Explore - TODO
   const buttonElement = document.querySelector("button");
-  const buttonWrapper = document.getElementById("button-wrapper");
-  const buttonWrapper_child = document.createElement("img");
+  // const buttonWrapper = document.getElementById("button-wrapper");
+  // const buttonWrapper_child = document.createElement("img");
 
-  buttonWrapper_child.setAttribute("src","assets/images/icons/arrow-down.png");
+  // buttonWrapper_child.setAttribute("src","assets/images/icons/arrow-down.png");
 
-  buttonWrapper.appendChild(buttonWrapper_child);
-  buttonWrapper.appendChild(buttonElement);
+  // buttonWrapper.appendChild(buttonWrapper_child);
+  // buttonWrapper.appendChild(buttonElement);
   
 
   buttonElement.addEventListener('click',change);
